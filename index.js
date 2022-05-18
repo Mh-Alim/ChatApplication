@@ -3,12 +3,12 @@ const express = require("express");
 const cors = require("cors")
 const socketIo = require("socket.io")
 
-const port = 4500 || process.env.PORT;
+const port = porcess.env.PORT || 4500;
 const app = express();
 
 const users = [{}];
 app.get("/",(req,res)=>{
-    res.send("runnign on this roo")
+    res.send("running  on this root");
 })
 
 
