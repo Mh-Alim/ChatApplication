@@ -23,7 +23,7 @@ io.on("connection",(socket)=>{
         users[socket.id] = data.user;
         console.log(`${data.user} is joined`);
         socket.broadcast.emit('userJoined',{user:"Admin",message:`${users[socket.id]} has joined`})
-        socket.emit('Welcome',{user:"Admin",message: `Welcome to the chat.${users[socket.id]}`})
+        socket.emit('Welcome',{user:"Admin",message: `Welcome to the chat ${users[socket.id]}`})
     })
     
     socket.on('message',({message,id})=>{
