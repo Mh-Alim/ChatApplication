@@ -3,7 +3,6 @@ const express = require("express");
 const path = require("path");
 const cors = require("cors");
 const socketIo = require("socket.io");
-const { isTypedArray } = require("util/types");
 
 const port = process.env.PORT || 4500;
 const app = express();
@@ -31,12 +30,10 @@ io.on("connection", (socket) => {
       users[socket.id] = data.user;
       console.log(socket.id);
       console.log(`${data.user} is joined`);
-      socket.broadcast
-        .to(room)
-        .emit("userJoined", {
-          user: "Admin",
-          message: `${users[socket.id]} has joined`,
-        });
+      socket.broadcast.to(room).emit("userJoined", {
+        user: "Admin",
+        message: `${users[socket.id]} has joined`,
+      });
       socket.emit("Welcome", {
         user: "Admin",
         message: `Welcome to the chat ${users[socket.id]}`,
@@ -70,12 +67,10 @@ io.on("connection", (socket) => {
     let room = rooms[socket.id]; // something
 
     if (room) {
-      socket
-        .to(room)
-        .emit("leave", {
-          user: "Admin",
-          message: `${users[socket.id]}  has left`,
-        });
+      socket.to(room).emit("leave", {
+        user: "Admin",
+        message: `${users[socket.id]}  has left`,
+      });
       console.log(`${users[socket.id]} has left`);
       delete rooms[socket.id];
       delete users[socket.id];
