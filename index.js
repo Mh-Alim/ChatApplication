@@ -17,6 +17,7 @@ io.on("connection", (socket) => {
   console.log("new connection ");
 
   socket.on("joined", (data) => {
+    
     if (data.roomId) {
       console.log("joined if ke ander");
       let room = data.roomId;
@@ -35,21 +36,43 @@ io.on("connection", (socket) => {
         user: "Admin",
         message: `Welcome to the chat ${users[socket.id]}`,
       });
-      return;
     }
-    console.log("joined down");
-    rooms[socket.id] = "";
-    users[socket.id] = data.user;
-    console.log(socket.id);
-    console.log(`${data.user} is joined`);
-    socket.broadcast.emit("userJoined", {
-      user: "Admin",
-      message: `${users[socket.id]} has joined`,
-    });
-    socket.emit("Welcome", {
-      user: "Admin",
-      message: `Welcome to the chat ${users[socket.id]}`,
-    });
+    else {
+      console.log("joined down");
+      rooms[socket.id] = "";
+      users[socket.id] = data.user;
+      console.log(socket.id);
+      console.log(`${data.user} is joined`);
+      socket.broadcast.emit("userJoined", {
+        user: "Admin",
+        message: `${users[socket.id]} has joined`,
+      });
+      socket.emit("Welcome", {
+        user: "Admin",
+        message: `Welcome to the chat ${users[socket.id]}`,
+      });
+    }
+    
+
+    // for count of total user in room
+    let room = data.roomId;
+    let totUser = 0;
+    for (let key in rooms) {
+      if (rooms.hasOwnProperty(key)) {
+        const getRoom = rooms[key];
+        // Perform actions with key and value
+        console.log(key, getRoom);
+        if (getRoom === room) {
+          totUser++;
+        }
+      }
+    }
+    console.log("total user " ,totUser);
+    if (room) {
+      io.to(room).emit("total-user", totUser);
+    }
+    else io.emit("total-user", totUser);
+
   });
 
   socket.on("message", ({ message, id, roomId }) => {
@@ -80,6 +103,23 @@ io.on("connection", (socket) => {
       delete rooms[socket.id];
       delete users[socket.id];
     }
+    // for count of total user in room
+    let totUser = 0;
+    for (let key in rooms) {
+      if (rooms.hasOwnProperty(key)) {
+        const getRoom = rooms[key];
+        // Perform actions with key and value
+        console.log(key, getRoom);
+        if (getRoom === room) {
+          totUser++;
+        }
+      }
+    }
+    console.log("total user " ,totUser);
+    if (room) {
+      io.to(room).emit("total-user", totUser);
+    }
+    else io.emit("total-user", totUser);
   });
   // broadcast me user ko chodke baaki sabhi ko message jaayega
 });
