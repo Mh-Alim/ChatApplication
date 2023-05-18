@@ -9,9 +9,6 @@ const app = express();
 
 const users = {};
 const rooms = {};
-app.get("/", (req, res) => {
-  res.send("running  on this root");
-});
 
 const server = http.createServer(app);
 const io = socketIo(server);
